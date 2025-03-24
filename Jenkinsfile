@@ -1,37 +1,35 @@
 pipeline {
-    agent any   
-
-    tools {
-        jdk 'Java17'
-        maven 'Maven'
+    agent any
+    environment {
+        DOCKER_USER = "knikhil999"
+        DOCKER_IMAGE = "${DOCKER_USER}/my-app"
+        DOCKER_CREDENTIALS = "dockerhub"
     }
-
-   environment {
-    APP_NAME = "register-app-pipeline"
-    RELEASE = "1.0.0"
-}
     stages {
-        stage("Cleanup Workspace") {
+        stage('Checkout Code') {
             steps {
-                cleanWs()
+                git 'https://github.com/KolkurNikhil/register-app.git'
             }
         }
-
-        stage("Checkout from SCM") {
+        stage('Build Jar') {
             steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/KolkurNikhil/register-app.git'
+                sh 'mvn clean package'
             }
         }
-
-        stage("Build Application") {
+        stage('Build Docker Image') {
             steps {
-                sh "mvn clean package"
+                script {
+                    dockerImage = docker.build("${DOCKER_IMAGE}:latest")
+                }
             }
         }
-
-        stage("Test Application") {
+        stage('Push to Docker Hub') {
             steps {
-                sh "mvn test"
+                script {
+                    docker.withRegistry('', DOCKER_CREDENTIALS) {
+                        dockerImage.push("latest")
+                    }
+                }
             }
         }
     }
