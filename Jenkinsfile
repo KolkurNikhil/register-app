@@ -1,18 +1,21 @@
 pipeline {
-    agent { any }
+    agent any   
+
     tools {
         jdk 'Java17'
         maven 'Maven'
     }
+
     environment {
         APP_NAME = "register-app-pipeline"
         RELEASE = "1.0.0"
         DOCKER_USER = "ashfaque9x"
-        DOCKER_PASS = 'dockerhub'
+        DOCKER_PASS = credentials("DOCKER_CREDENTIAL_ID")  // ✅ Use credentials instead of hardcoding
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
         JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
     }
+
     stages {
         stage("Cleanup Workspace") {
             steps {
@@ -37,7 +40,5 @@ pipeline {
                 sh "mvn test"
             }
         }
-
-       
     }
 }
