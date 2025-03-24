@@ -6,15 +6,10 @@ pipeline {
         maven 'Maven'
     }
 
-    environment {
-        APP_NAME = "register-app-pipeline"
-        RELEASE = "1.0.0"
-        DOCKER_USER = "ashfaque9x"
-        DOCKER_PASS = credentials("DOCKER_CREDENTIAL_ID")  // ✅ Use credentials instead of hardcoding
-        IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
-        IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-    }
-
+   environment {
+    APP_NAME = "register-app-pipeline"
+    RELEASE = "1.0.0"
+}
     stages {
         stage("Cleanup Workspace") {
             steps {
