@@ -12,11 +12,15 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/KolkurNikhil/register-app.git'
             }
         }
-        stage('Build Jar') {
-            steps {
-                sh '${MAVEN_HOME} clean package'
-            }
+        stage('Clean & Build') {
+    steps {
+        script {
+            sh "mvn clean"
+            sh "mvn package"
         }
+    }
+}
+        
         stage('Build Docker Image') {
             steps {
                 script {
