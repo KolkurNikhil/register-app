@@ -4,7 +4,7 @@ pipeline {
         DOCKER_USER = "knikhil999"
         DOCKER_IMAGE = "${DOCKER_USER}/my-app"
         DOCKER_CREDENTIALS = "dockerhub"
-        MAVEN_HOME = "/opt/maven/bin/mvn"
+        MAVEN_PATH = "/opt/maven/bin/mvn"  // Define Maven path explicitly
     }
     stages {
         stage('Checkout Code') {
@@ -12,15 +12,11 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/KolkurNikhil/register-app.git'
             }
         }
-        stage('Clean & Build') {
-    steps {
-        script {
-            sh "mvn clean"
-            sh "mvn package"
+        stage('Build Jar') {
+            steps {
+                sh '${MAVEN_PATH} clean package'  // Use full Maven path
+            }
         }
-    }
-}
-        
         stage('Build Docker Image') {
             steps {
                 script {
@@ -39,5 +35,6 @@ pipeline {
         }
     }
 }
+
 
 
