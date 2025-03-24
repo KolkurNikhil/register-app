@@ -5,12 +5,11 @@ pipeline {
         DOCKER_IMAGE = "${DOCKER_USER}/my-app"
         DOCKER_CREDENTIALS = "dockerhub"
     }
-    stages {
-        stage('Checkout Code') {
-            steps {
-                git 'https://github.com/KolkurNikhil/register-app.git'
-            }
-        }
+   stage('Checkout Code') {
+    steps {
+        git branch: 'main', url: 'https://github.com/KolkurNikhil/register-app.git'
+    }
+}
         stage('Build Jar') {
             steps {
                 sh 'mvn clean package'
